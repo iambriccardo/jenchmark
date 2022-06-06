@@ -64,7 +64,7 @@ You can either define a simple method with no annotations or use the `@Benchmark
 want parameters automatically injected by the generator.
 
 ```java
-public void webPlusDb()throws InterruptedException{
+public void webPlusDb() throws InterruptedException {
     Thread.sleep(1000);
     checkpointer.onCheckpoint("Web request");
 
@@ -83,7 +83,7 @@ want a different value.
 ```java
 @BenchmarkParam(type = Long.class)
 @BenchmarkParam(type = Long.class, generator = MyGenerator.class)
-public void webPlusDbParams(long webDelay,long dbDelay)throws InterruptedException{
+public void webPlusDbParams(long webDelay,long dbDelay) throws InterruptedException{
     Thread.sleep(webDelay);
     checkpointer.onCheckpoint("Web request");
 
@@ -114,9 +114,9 @@ passing the `Benchmark` instance. This design decision to lazily evaluate benchm
 definition of benchmarks independently of their execution.
 
 ```java
-BenchmarkEngine engine=new BenchmarkEngine();
+BenchmarkEngine engine = new BenchmarkEngine();
 
-Benchmark<TestBenchmark> benchmark=new BenchmarkBuilder<TestBenchmark>()
+Benchmark<TestBenchmark> benchmark = new BenchmarkBuilder<TestBenchmark>()
   .of(TestBenchmark.class)
   .method("webPlusDb")
   .withParams()
@@ -125,7 +125,7 @@ Benchmark<TestBenchmark> benchmark=new BenchmarkBuilder<TestBenchmark>()
   .repeat(1)
   .build();
 
-BenchmarkResult<TestBenchmark> result=engine.benchmark(benchmark);
+BenchmarkResult<TestBenchmark> result = engine.benchmark(benchmark);
 ```
 
 The execution of the benchmark will return a `BenchmarkResult` which will contain all the measurements and the details
