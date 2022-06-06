@@ -8,7 +8,7 @@ I hope you will like this lil-project made during a boring afternoon 🥱. Shoul
 feel free to open a PR.
 
 _Jenchmark has been created while experimenting with framework design and is not meant to be used in a production
-environment._
+environment. In addition, it doesn't have a super refined design because it was built during a flow of ideas._
 
 # Sample usage
 
@@ -65,12 +65,12 @@ want parameters automatically injected by the generator.
 
 ```java
 public void webPlusDb()throws InterruptedException{
-        Thread.sleep(1000);
-        checkpointer.onCheckpoint("Web request");
+    Thread.sleep(1000);
+    checkpointer.onCheckpoint("Web request");
 
-        Thread.sleep(500);
-        checkpointer.onCheckpoint("Database query");
-        }
+    Thread.sleep(500);
+    checkpointer.onCheckpoint("Database query");
+}
 ```
 
 It is important to note that **the order of the annotations must match the order of the parameters**. In addition, all
@@ -84,12 +84,12 @@ want a different value.
 @BenchmarkParam(type = Long.class)
 @BenchmarkParam(type = Long.class, generator = MyGenerator.class)
 public void webPlusDbParams(long webDelay,long dbDelay)throws InterruptedException{
-        Thread.sleep(webDelay);
-        checkpointer.onCheckpoint("Web request");
+    Thread.sleep(webDelay);
+    checkpointer.onCheckpoint("Web request");
 
-        Thread.sleep(dbDelay);
-        checkpointer.onCheckpoint("Database query");
-        }
+    Thread.sleep(dbDelay);
+    checkpointer.onCheckpoint("Database query");
+}
 ```
 
 ## 4. Define the benchmark
@@ -116,16 +116,16 @@ definition of benchmarks independently of their execution.
 ```java
 BenchmarkEngine engine=new BenchmarkEngine();
 
-        Benchmark<TestBenchmark> benchmark=new BenchmarkBuilder<TestBenchmark>()
-        .of(TestBenchmark.class)
-        .method("webPlusDb")
-        .withParams()
-        .repeat(1)
-        .pause(1000)
-        .repeat(1)
-        .build();
+Benchmark<TestBenchmark> benchmark=new BenchmarkBuilder<TestBenchmark>()
+  .of(TestBenchmark.class)
+  .method("webPlusDb")
+  .withParams()
+  .repeat(1)
+  .pause(1000)
+  .repeat(1)
+  .build();
 
-        BenchmarkResult<TestBenchmark> result=engine.benchmark(benchmark);
+BenchmarkResult<TestBenchmark> result=engine.benchmark(benchmark);
 ```
 
 The execution of the benchmark will return a `BenchmarkResult` which will contain all the measurements and the details
