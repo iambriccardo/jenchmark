@@ -1,15 +1,28 @@
 # Jenchmark
-Jenchmark is a super simple benchmarking library for Java based on reflection and metadata.
-It has been created while experimenting with framework design and is not meant to be used in a production environment.
+
+Jenchmark is a super simple benchmarking library for Java based on reflection and metadata. The framework by default
+benchmarks the whole method. However, it supports checkpointing for measuring the performance of specific sections
+within each method.
+
+I hope you will like this lil-project made during a boring afternoon 🥱. Should you have any comments or suggestions
+feel free to open a PR.
+
+_Jenchmark has been created while experimenting with framework design and is not meant to be used in a production
+environment._
 
 # Sample usage
 
 ## 1. Define `class` to be benchmarked
-* The annotation `@Benchmark` specifies that we want to benchmark this class. It requires the name of the benchmark and optionally the generator used to automatically inject values for methods.
-* The annotation `@InjectCheckpointer` specifies that we want to have access to a `Checkpointer` in this class. The `Checkpointer` is used to checkpoint the function in specific places.
+
+* The annotation `@Benchmark` specifies that we want to benchmark this class. It requires the name of the benchmark and
+  optionally the generator used to automatically inject values for methods.
+* The annotation `@InjectCheckpointer` specifies that we want to have access to a `Checkpointer` in this class.
+  The `Checkpointer` is used to checkpoint the function in specific places.
 
 In case you are using the checkpointer, you **must** have a constructor accepting a `Checkpointer` implementation.
+
 ```java
+
 @Benchmark(name = "TestBenchmark", fallbackGenerator = BaseGenerator.class)
 @InjectCheckpointer(checkpointer = BenchmarkEngine.EngineCheckpointer.class)
 public class TestBenchmark {
@@ -23,7 +36,10 @@ public class TestBenchmark {
 ```
 
 ## 2. Define generator(s) (only if needed)
-If you are using generated params then you can either use the `BaseGenerator` which supports primitive types and Strings or you can build your own by implementing the `BenchmarkGenerator` interface.
+
+If you are using generated params then you can either use the `BaseGenerator` which supports primitive types and Strings
+or you can build your own by implementing the `BenchmarkGenerator` interface.
+
 ```java
 public class MyGenerator implements BenchmarkGenerator {
 
@@ -38,54 +54,69 @@ public class MyGenerator implements BenchmarkGenerator {
     }
 }
 ```
-In addition, Jenchmark provides two other generators respectively `FallbackGenerator` and `VoidGenerator`. Their implementation is strictly meaningful for the framework internals, therefore their usage is discouraged.
+
+In addition, Jenchmark provides two other generators respectively `FallbackGenerator` and `VoidGenerator`. Their
+implementation is strictly meaningful for the framework internals, therefore their usage is discouraged.
 
 ## 3. Define methods
-You can either define a simple method with no annotations or use the `@BenchmarkParam` annotation to specify that you want parameters automatically injected by the generator.
-```java
-public void webPlusDb() throws InterruptedException {
-    Thread.sleep(1000);
-    checkpointer.onCheckpoint("Web request");
 
-    Thread.sleep(500);
-    checkpointer.onCheckpoint("Database query");
-}
+You can either define a simple method with no annotations or use the `@BenchmarkParam` annotation to specify that you
+want parameters automatically injected by the generator.
+
+```java
+public void webPlusDb()throws InterruptedException{
+        Thread.sleep(1000);
+        checkpointer.onCheckpoint("Web request");
+
+        Thread.sleep(500);
+        checkpointer.onCheckpoint("Database query");
+        }
 ```
 
-It is important to note that **the order of the annotations must match the order of the parameters**. In addition, all the parameters must be annotated because for now
+It is important to note that **the order of the annotations must match the order of the parameters**. In addition, all
+the parameters must be annotated because for now
 the framework doesn't support hybrid parameters.
 
-Besides the type, you can also specify a custom generator for each specific parameter which could be helpful when you want a different value.
+Besides the type, you can also specify a custom generator for each specific parameter which could be helpful when you
+want a different value.
+
 ```java
 @BenchmarkParam(type = Long.class)
 @BenchmarkParam(type = Long.class, generator = MyGenerator.class)
-public void webPlusDbParams(long webDelay, long dbDelay) throws InterruptedException {
-    Thread.sleep(webDelay);
-    checkpointer.onCheckpoint("Web request");
+public void webPlusDbParams(long webDelay,long dbDelay)throws InterruptedException{
+        Thread.sleep(webDelay);
+        checkpointer.onCheckpoint("Web request");
 
-    Thread.sleep(dbDelay);
-    checkpointer.onCheckpoint("Database query");
-}
+        Thread.sleep(dbDelay);
+        checkpointer.onCheckpoint("Database query");
+        }
 ```
 
 ## 4. Define the benchmark
+
 You can build a `Benchmark` via the `BenchmarkBuilder` which will make the whole process as simple as it gets.
 
 A `Benchmark` is built by the following methods:
+
 * `of`: class that we want to benchmark.
-* `method`: name of the method we want to benchmark, together with the types of its parameters (useful in case of method overloading).
+* `method`: name of the method we want to benchmark, together with the types of its parameters (useful in case of method
+  overloading).
 * `withParams`: pass the params to be injected into the method.
 * `withGenerator`: specify to inject the params generated by the generator.
-* `repeat`: execute the benchmark method a number of times. This is useful when you are testing non-deterministic functions with side effects.
-* `pause`: pause for a number of ms. This is useful when the system's performance is impacted by the execution's behavior.
-* `build`: creates the benchmark but doesn't execute it.
+* `repeat`: execute the benchmark method a number of times. This is useful when you are testing non-deterministic
+  functions with side effects.
+* `pause`: pause for a number of ms. This is useful when the system's performance is impacted by the execution's
+  behavior.
+* `build`: create the benchmark.
 
-In order to execute a benchmark you will need to initiate the `BenchmarkEngine` and call the `benchmark` method by passing the `Benchmark` instance. This design decision to lazily evaluate benchmarks was done in order to allow the definition of benchmarks independently of their execution.
+In order to execute a benchmark you will need to initiate the `BenchmarkEngine` and call the `benchmark` method by
+passing the `Benchmark` instance. This design decision to lazily evaluate benchmarks was done in order to allow the
+definition of benchmarks independently of their execution.
 
 ```java
-BenchmarkEngine engine = new BenchmarkEngine();
+BenchmarkEngine engine=new BenchmarkEngine();
 
-Benchmark<TestBenchmark> benchmark = new BenchmarkBuilder<TestBenchmark>()
+        Benchmark<TestBenchmark> benchmark=new BenchmarkBuilder<TestBenchmark>()
         .of(TestBenchmark.class)
         .method("webPlusDb")
         .withParams()
@@ -94,7 +125,8 @@ Benchmark<TestBenchmark> benchmark = new BenchmarkBuilder<TestBenchmark>()
         .repeat(1)
         .build();
 
-BenchmarkResult<TestBenchmark> result = engine.benchmark(benchmark);
+        BenchmarkResult<TestBenchmark> result=engine.benchmark(benchmark);
 ```
 
-The execution of the benchmark will return a `BenchmarkResult` which will contain all the measurements and the details of the benchmark.
+The execution of the benchmark will return a `BenchmarkResult` which will contain all the measurements and the details
+of the benchmark.
