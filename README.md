@@ -1,6 +1,6 @@
 # Jenchmark
 
-Jenchmark is a super simple benchmarking library for Java based on reflection and metadata. The framework by default
+Jenchmark is a super simple (and absolutely thread-unsafe) benchmarking library for Java based on reflection and metadata. The framework by default
 benchmarks the whole method. However, it supports checkpointing for measuring the performance of specific sections
 within each method.
 
@@ -8,7 +8,7 @@ I hope you will like this lil-project made during a boring afternoon 🥱. Shoul
 feel free to open a PR.
 
 _Jenchmark has been created while experimenting with framework design and is not meant to be used in a production
-environment. In addition, it doesn't have a super refined design because it was built during a continuous stream of ideas (e.g., exceptions are not handled, some parts require better abstractions, monotonic clocks should be used)._
+environment. In addition, it doesn't have a super refined design because it was built during a continuous stream of ideas (e.g., exceptions are not handled, some parts require better abstractions, monotonic clocks should be used, thread-safety should be implemented)._
 
 # Sample usage
 
