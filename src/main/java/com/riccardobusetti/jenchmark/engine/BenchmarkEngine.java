@@ -1,7 +1,7 @@
 package com.riccardobusetti.jenchmark.engine;
 
-import com.riccardobusetti.jenchmark.annotations.BenchmarkParam;
 import com.riccardobusetti.jenchmark.annotations.Benchmark;
+import com.riccardobusetti.jenchmark.annotations.BenchmarkParam;
 import com.riccardobusetti.jenchmark.annotations.InjectCheckpointer;
 import com.riccardobusetti.jenchmark.engine.checkpointing.Checkpointer;
 import com.riccardobusetti.jenchmark.engine.execution.Step;
