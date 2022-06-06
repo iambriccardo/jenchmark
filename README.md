@@ -8,7 +8,7 @@ I hope you will like this lil-project made during a boring afternoon 🥱. Shoul
 feel free to open a PR.
 
 _Jenchmark has been created while experimenting with framework design and is not meant to be used in a production
-environment. In addition, it doesn't have a super refined design because it was built during a flow of ideas._
+environment. In addition, it doesn't have a super refined design because it was built during a continuous stream of ideas (e.g., exceptions are not handled, some parts require better abstractions, monotonic clocks should be used)._
 
 # Sample usage
 
